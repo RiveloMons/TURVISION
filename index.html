@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="es" data-lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0a0a">
+<title>TURVISION</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,700;0,900;1,900&family=Inter:wght@300;400;500&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+/* ==============================================
+   TURVISION — Design System
+   Negro / Blanco crudo / Rojo sangre
+   Layout editorial asimétrico
+=============================================== */
+:root{
+  --k:#0a0a0a;
+  --k1:#111;
+  --k2:#1a1a1a;
+  --b:#2a2a2a;
+  --w:#ede9e3;
+  --w2:#9a9490;
+  --r:#bf1f1f;
+  --r2:#e02020;
+  --fd:'Barlow Condensed',sans-serif;
+  --fb:'Inter',sans-serif;
+  --fm:'Space Mono',monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  background:var(--k);
+  color:var(--w);
+  font-family:var(--fb);
+  font-size:15px;
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;font-family:inherit}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--k)}
+::-webkit-scrollbar-thumb{background:var(--r)}
+
+/* ── UTIL ── */
+.c{max-width:1280px;margin:0 auto;padding:0 20px}
+.eyebrow{
+  font-family:var(--fm);
+  font-size:10px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--r);
+}
+.mono{font-family:var(--fm);font-size:10px;letter-spacing:.15em;text-transform:uppercase}
+
+/* ── BUTTONS ── */
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--fm);font-size:10px;
+  letter-spacing:.15em;text-transform:uppercase;
+  padding:14px 24px;border:none;
+  transition:all .25s;white-space:nowrap;
+}
+.btn-r{background:var(--r);color:var(--w)}
+.btn-r:hover{background:var(--r2)}
+.btn-g{background:transparent;color:var(--w);border:1px solid var(--b)}
+.btn-g:hover{border-color:var(--w)}
+.btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2}
+
+/* ── NAV ── */
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:0;
+  transition:background .3s;
+}
+#nav.up{
+  background:rgba(10,10,10,.96);
+  border-bottom:1px solid var(--b);
+  backdrop-filter:blur(16px);
+}
+.nav-wrap{
+  display:flex;align-items:center;justify-content:space-between;
+  height:60px;
+}
+.nav-logo{
+  font-family:var(--fd);font-weight:900;font-size:24px;
+  letter-spacing:.08em;color:var(--w);
+  flex-shrink:0;
+}
+.nav-logo em{color:var(--r);font-style:normal}
+.nav-links{
+  display:flex;gap:36px;list-style:none;
+  position:absolute;left:50%;transform:translateX(-50%);
+}
+.nav-links a{
+  font-family:var(--fm);font-size:10px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--w2);
+  transition:color .2s;
+}
+.nav-links a:hover{color:var(--w)}
+.nav-right{display:flex;align-items:center;gap:16px}
+.lang-sw{
+  font-family:var(--fm);font-size:9px;letter-spacing:.1em;
+  text-transform:uppercase;background:none;border:1px solid var(--b);
+  color:var(--w2);padding:6px 10px;transition:all .2s;
+}
+.lang-sw:hover{border-color:var(--r);color:var(--w)}
+.nav-cta{padding:10px 18px;font-size:9px}
+.burger{
+  display:none;flex-direction:column;gap:5px;
+  background:none;border:none;padding:6px;
+}
+.burger span{
+  display:block;width:20px;height:1px;background:var(--w);
+  transition:all .3s;
+}
+.burger.x span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.burger.x span:nth-child(2){opacity:0}
+.burger.x span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+
+/* ── DRAWER ── */
+#drawer{
+  position:fixed;inset:0;z-index:99;background:var(--k);
+  display:flex;flex-direction:column;
+  padding:80px 20px 40px;
+  transform:translateX(-100%);transition:transform .4s cubic-bezier(.77,0,.18,1);
+}
+#drawer.open{transform:none}
+.drawer-links{display:flex;flex-direction:column}
+.drawer-links a{
+  font-family:var(--fd);font-weight:900;font-style:italic;
+  font-size:clamp(48px,12vw,72px);
+  line-height:1;color:var(--w);
+  border-bottom:1px solid var(--b);padding:14px 0;
+  transition:color .2s,padding .2s;
+}
+.drawer-links a:hover{color:var(--r);padding-left:12px}
+.drawer-bottom{
+  margin-top:auto;display:flex;justify-content:space-between;align-items:center;
+}
+.drawer-bottom span{font-family:var(--fm);font-size:9px;color:var(--w2);letter-spacing:.1em}
+
+/* ── HERO ── */
+#hero{
+  min-height:100svh;display:flex;flex-direction:column;
+  justify-content:flex-end;padding-bottom:60px;
+  position:relative;overflow:hidden;background:var(--k);
+}
+/* Ruido de textura */
+#hero::before{
+  content:'';position:absolute;inset:0;z-index:1;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity:.025;pointer-events:none;
+}
+.hero-line{
+  position:absolute;top:0;left:0;bottom:0;width:1px;
+  background:linear-gradient(var(--r),transparent);
+  left:clamp(16px,6vw,80px);z-index:2;opacity:.3;
+}
+/* Gran número decorativo */
+.hero-deco{
+  position:absolute;top:-0.05em;right:-0.02em;
+  font-family:var(--fd);font-weight:900;font-style:italic;
+  font-size:clamp(260px,45vw,560px);
+  line-height:1;
+  -webkit-text-stroke:1px rgba(237,233,227,.04);
+  color:transparent;
+  pointer-events:none;user-select:none;z-index:2;
+  letter-spacing:-.02em;
+}
+/* Mira SVG */
+.hero-aim{
+  position:absolute;top:24px;right:clamp(16px,6vw,60px);
+  width:clamp(80px,14vw,160px);height:clamp(80px,14vw,160px);
+  z-index:3;opacity:.18;
+}
+.hero-aim circle{stroke:var(--r);fill:none;stroke-width:.8}
+.hero-aim line{stroke:var(--r);stroke-width:.8}
+
+.hero-body{position:relative;z-index:4}
+.hero-tag{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:20px;
+}
+.hero-tag-line{width:40px;height:1px;background:var(--r)}
+.hero-h1{
+  font-family:var(--fd);font-weight:900;font-style:italic;
+  font-size:clamp(100px,22vw,280px);
+  line-height:.88;letter-spacing:-.02em;
+  color:var(--w);
+  /* Recorte asimétrico: solo "VISION" en outline */
+}
+.hero-h1 .out{
+  -webkit-text-stroke:1px var(--w);
+  color:transparent;
+  display:block;
+}
+.hero-sub-row{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  gap:24px;margin-top:32px;flex-wrap:wrap;
+}
+.hero-desc{
+  max-width:380px;color:var(--w2);
+  font-size:13px;line-height:1.85;
+}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+/* Línea vertical izquierda hero */
+.hero-scroll-label{
+  position:absolute;bottom:60px;left:clamp(16px,6vw,80px);
+  transform:rotate(-90deg) translateX(50%);
+  transform-origin:left bottom;
+  font-family:var(--fm);font-size:9px;letter-spacing:.2em;
+  color:var(--w2);text-transform:uppercase;
+  display:flex;align-items:center;gap:8px;
+  white-space:nowrap;z-index:4;
+}
+.hero-scroll-label::before{
+  content:'';display:block;width:32px;height:1px;background:var(--r);flex-shrink:0;
+}
+
+/* ── TICKER ── */
+.ticker{
+  background:var(--r);overflow:hidden;
+  padding:10px 0;border-top:1px solid rgba(0,0,0,.2);
+}
+.ticker-t{
+  display:inline-flex;gap:0;white-space:nowrap;
+  animation:tk 22s linear infinite;
+}
+.ticker-t span{
+  font-family:var(--fd);font-weight:700;font-size:13px;
+  letter-spacing:.12em;color:var(--w);
+  padding:0 28px;text-transform:uppercase;
+}
+.ticker-t i{
+  color:rgba(255,255,255,.35);font-style:normal;
+  align-self:center;font-size:8px;
+}
+@keyframes tk{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ── SOBRE ── */
+#sobre{padding:120px 0;position:relative;overflow:hidden}
+#sobre::after{
+  content:'TVSN';
+  position:absolute;bottom:-40px;right:-20px;
+  font-family:var(--fd);font-weight:900;font-style:italic;
+  font-size:clamp(120px,20vw,280px);
+  -webkit-text-stroke:1px rgba(237,233,227,.03);
+  color:transparent;pointer-events:none;user-select:none;
+}
+.sobre-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:clamp(40px,8vw,120px);align-items:center;
+}
+.sobre-img{
+  position:relative;
+  aspect-ratio:4/5;overflow:hidden;
+  background:var(--k2);
+  border:1px solid var(--b);
+}
+.sobre-img-inner{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:12px;
+}
+.sobre-img-inner span{
+  font-family:var(--fm);font-size:8px;letter-spacing:.15em;
+  color:var(--b);text-transform:uppercase;text-align:center;
+  line-height:1.8;padding:0 20px;
+}
+.sobre-stamp{
+  position:absolute;bottom:20px;right:20px;
+  background:var(--r);
+  font-family:var(--fm);font-size:8px;letter-spacing:.12em;
+  color:var(--w);padding:8px 12px;text-transform:uppercase;
+}
+.sobre-txt .eyebrow{margin-bottom:20px}
+.sobre-h2{
+  font-family:var(--fd);font-weight:900;font-style:italic;
+  font-size:clamp(52px,7vw,96px);
+  line-height:.9;color:var(--w);
+  margin-bottom:32px;
+}
+.sobre-p{color:var(--w2);font-size:14px;line-height:1.9;margin-bottom:16px}
+.sobre-p strong{color:var(--w);font-weight:500}
+/* Stats en L */
+.stats{
+  margin-top:48px;
+  display:grid;grid-template-columns:1fr 1fr;
+  border-top:1px solid var(--b);border-left:1px solid var(--b);
+}
+.stat{
+  border-right:1px solid var(--b);border-bottom:1px solid var(--b);
+  padding:20px;
+}
+.stat-n{
+  font-family:var(--fd);font-weight:900;font-size:52px;
+  line-height:1;color:var(--w);
+}
+.stat-n em{color:var(--r);font-style:normal}
+.stat-l{
+  font-family:var(--fm);font-size:8px;letter-spacing:.12em;
+  color:var(--w2);text-transform:uppercase;margin-top:4px;
+}
+
+/* ── COLECCIÓN ── */
+#coleccion{padding:100px 0;background:var(--k1)}
+.col-head{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  margin-bottom:48px;gap:20px;flex-wrap:wrap;
+}
+.col-h2{
+  font-family:var(--fd);font-weight:900;font-style:italic;
+  font-size:clamp(48px,7vw,88px);
+  line-height:.9;color:var(--w);
+}
+.tabs{display:flex;border:1px solid var(--b);overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tab{
+  font-family:var(--fm);font-size:9px;letter-spacing:.12em;
+  text-transform:uppercase;padding:10px 18px;
+  background:none;border:none;color:var(--w2);
+  border-right:1px solid var(--b);white-space:nowrap;
+  transition:all .2s;flex-shrink:0;
+}
+.tab:last-child{border-right:none}
+.tab.on{background:var(--r);color:var(--w)}
+.tab:not(.on):hover{color:var(--w);background:var(--k2)}
+
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--b)}
+.pc{background:var(--k);display:none;flex-direction:column}
+.pc.on{display:flex}
+.pimg{
+  aspect-ratio:2/3;background:var(--k2);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.pimg-txt{
+  font-family:var(--fd);font-weight:900;font-style:italic;
+  font-size:clamp(48px,8vw,96px);
+  color:rgba(237,233,227,.04);letter-spacing:-.02em;user-select:none;
+}
+.pbadge{
+  position:absolute;top:12px;left:12px;
+  background:var(--r);color:var(--w);
+  font-family:var(--fm);font-size:8px;letter-spacing:.1em;
+  text-transform:uppercase;padding:4px 8px;
+}
+.pover{
+  position:absolute;inset:0;background:rgba(10,10,10,.88);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .25s;
+}
+.pc:hover .pover{opacity:1}
+.pinfo{padding:16px 16px 20px;border-top:1px solid var(--b)}
+.pname{
+  font-family:var(--fd);font-weight:700;font-size:20px;
+  letter-spacing:.04em;color:var(--w);margin-bottom:6px;
+}
+.pdesc{font-size:12px;color:var(--w2);line-height:1.6;margin-bottom:14px}
+.pfoot{display:flex;align-items:center;justify-content:space-between}
+.pprice{font-family:var(--fm);font-size:13px;color:var(--w)}
+.plink{
+  font-family:var(--fm);font-size:9px;letter-spacing:.1em;
+  color:var(--r);text-transform:uppercase;
+  border-bottom:1px solid var(--r);padding-bottom:1px;
+  transition:color .2s;
+}
+.plink:hover{color:var(--r2)}
+
+/* ── LOOKBOOK ── */
+#lookbook{padding:100px 0}
+.lb-head{margin-bottom:48px}
+.lb-h2{
+  font-family:var(--fd);font-weight:900;font-style:italic;
+  font-size:clamp(48px,7vw,88px);line-height:.9;color:var(--w);
+}
+/* Mosaico asimétrico editorial */
+.lb-mosaic{
+  display:grid;
+  grid-template-columns:1.4fr 1fr 1fr;
+  grid-template-rows:auto auto;
+  gap:3px;
+}
+.lb-cell{
+  background:var(--k2);position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.lb-cell:nth-child(1){grid-row:span 2;aspect-ratio:3/4}
+.lb-cell:nth-child(2){aspect-ratio:4/3}
+.lb-cell:nth-child(3){aspect-ratio:4/3}
+.lb-cell:nth-child(4){aspect-ratio:4/3}
+.lb-cell:nth-child(5){aspect-ratio:4/3}
+.lb-inner{
+  text-align:center;display:flex;flex-direction:column;
+  align-items:center;gap:8px;padding:16px;
+}
+.lb-icon{font-size:24px;opacity:.12}
+.lb-text{
+  font-family:var(--fm);font-size:8px;letter-spacing:.1em;
+  color:var(--b);text-transform:uppercase;line-height:1.7;
+}
+.lb-cap{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:12px;
+  background:linear-gradient(transparent,rgba(10,10,10,.85));
+  font-family:var(--fm);font-size:8px;letter-spacing:.1em;
+  color:rgba(237,233,227,.5);text-transform:uppercase;
+}
+
+/* ── RESERVAR ── */
+#reservar{padding:100px 0;background:var(--k1)}
+.res-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:clamp(40px,8vw,100px);align-items:start;
+}
+.res-h2{
+  font-family:var(--fd);font-weight:900;font-style:italic;
+  font-size:clamp(52px,7vw,88px);
+  line-height:.9;color:var(--w);margin:20px 0 28px;
+}
+.res-p{color:var(--w2);font-size:13px;line-height:1.9;margin-bottom:36px}
+.steps{display:flex;flex-direction:column}
+.step{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--b)}
+.step:last-child{border:none}
+.step-n{
+  font-family:var(--fd);font-weight:900;font-size:28px;
+  color:var(--r);line-height:1;min-width:32px;
+}
+.step-tit{
+  font-family:var(--fm);font-size:9px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--w);display:block;margin-bottom:4px;
+}
+.step-sub{font-size:12px;color:var(--w2)}
+
+/* Form */
+.rform{background:var(--k2);border:1px solid var(--b);padding:32px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fg{margin-bottom:14px}
+.fg label{
+  display:block;font-family:var(--fm);font-size:8px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--w2);margin-bottom:6px;
+}
+.fg input,.fg select,.fg textarea{
+  width:100%;background:var(--k);border:1px solid var(--b);
+  color:var(--w);font-family:var(--fb);font-size:13px;
+  padding:11px 14px;outline:none;transition:border-color .2s;
+  -webkit-appearance:none;appearance:none;border-radius:0;
+}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--r)}
+.fg select option{background:var(--k)}
+.fg textarea{resize:vertical;min-height:72px}
+.fbtn{width:100%;padding:14px;justify-content:center;margin-top:4px}
+.fnote{
+  font-family:var(--fm);font-size:8px;letter-spacing:.08em;
+  color:var(--w2);text-align:center;margin-top:12px;line-height:1.6;
+}
+
+/* ── CONTACTO ── */
+#contacto{padding:120px 0;position:relative;overflow:hidden}
+#contacto::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(191,31,31,.07) 0%,transparent 70%);
+  pointer-events:none;
+}
+.ct-inner{position:relative;z-index:2;text-align:center}
+.ct-h2{
+  font-family:var(--fd);font-weight:900;font-style:italic;
+  font-size:clamp(64px,14vw,160px);
+  line-height:.85;letter-spacing:-.02em;margin:16px 0 28px;
+}
+.ct-h2 .out{
+  -webkit-text-stroke:1px rgba(237,233,227,.15);
+  color:transparent;display:block;
+}
+.ct-sub{color:var(--w2);font-size:13px;max-width:360px;margin:0 auto 40px;line-height:1.85}
+.ct-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.ct-data{
+  display:flex;gap:clamp(24px,6vw,64px);justify-content:center;
+  flex-wrap:wrap;margin-top:72px;
+  padding-top:40px;border-top:1px solid var(--b);
+}
+.ct-item-l{font-family:var(--fm);font-size:8px;letter-spacing:.15em;color:var(--r);text-transform:uppercase;margin-bottom:6px}
+.ct-item-v{font-family:var(--fm);font-size:12px;color:var(--w2)}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--b);padding:28px 0}
+.ft{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.ft-logo{
+  font-family:var(--fd);font-weight:900;font-size:20px;
+  letter-spacing:.08em;color:var(--w);
+}
+.ft-logo em{color:var(--r);font-style:normal}
+.ft-links{display:flex;gap:20px}
+.ft-links a{
+  font-family:var(--fm);font-size:8px;letter-spacing:.1em;
+  color:var(--w2);text-transform:uppercase;transition:color .2s;
+}
+.ft-links a:hover{color:var(--w)}
+.ft-copy{font-family:var(--fm);font-size:8px;letter-spacing:.1em;color:var(--b);text-transform:uppercase}
+
+/* ── ADMIN TRIGGER ── */
+#atrig{
+  position:fixed;bottom:90px;right:20px;z-index:90;
+  width:36px;height:36px;background:var(--k2);border:1px solid var(--b);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;transition:border-color .2s;
+}
+#atrig:hover{border-color:var(--r)}
+
+/* ── MODAL ── */
+.overlay{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.85);backdrop-filter:blur(10px);
+  align-items:center;justify-content:center;
+}
+.overlay.on{display:flex}
+.modal{
+  background:var(--k2);border:1px solid var(--b);
+  width:100%;max-width:480px;max-height:90svh;
+  overflow-y:auto;padding:36px;margin:0 16px;position:relative;
+}
+.modal-tit{
+  font-family:var(--fd);font-weight:900;font-size:28px;
+  letter-spacing:.06em;color:var(--w);margin-bottom:4px;
+}
+.modal-sub{font-family:var(--fm);font-size:8px;letter-spacing:.12em;color:var(--w2);text-transform:uppercase;margin-bottom:28px}
+.modal-x{
+  position:absolute;top:16px;right:16px;background:none;border:none;
+  color:var(--w2);font-size:18px;width:28px;height:28px;
+  display:flex;align-items:center;justify-content:center;
+  transition:color .2s;
+}
+.modal-x:hover{color:var(--w)}
+.atabs{display:flex;border-bottom:1px solid var(--b);margin-bottom:28px}
+.atab{
+  font-family:var(--fm);font-size:8px;letter-spacing:.12em;text-transform:uppercase;
+  padding:10px 14px;background:none;border:none;border-bottom:2px solid transparent;
+  color:var(--w2);transition:all .2s;
+}
+.atab.on{color:var(--w);border-bottom-color:var(--r)}
+.apanel{display:none}
+.apanel.on{display:block}
+.ag{margin-bottom:20px}
+.ag label{
+  display:block;font-family:var(--fm);font-size:8px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--w2);margin-bottom:6px;
+}
+.ag input{
+  width:100%;background:var(--k);border:1px solid var(--b);
+  color:var(--w);font-family:var(--fb);font-size:13px;
+  padding:10px 12px;outline:none;border-radius:0;
+}
+.ag input:focus{border-color:var(--r)}
+.asave{width:100%;padding:13px;justify-content:center;margin-top:4px}
+.anote{font-family:var(--fm);font-size:8px;letter-spacing:.08em;color:var(--w2);text-align:center;margin-top:10px;line-height:1.6}
+
+/* ── WA FLOAT ── */
+#waf{
+  position:fixed;bottom:24px;right:20px;z-index:90;
+  width:48px;height:48px;background:#25d366;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;transition:transform .2s;
+  box-shadow:0 4px 16px rgba(37,211,102,.25);
+}
+#waf:hover{transform:scale(1.06)}
+
+/* ── SCROLL REVEAL ── */
+.rv{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease}
+.rv.vis{opacity:1;transform:none}
+
+/* ══════════════════════════════════
+   RESPONSIVE MOBILE
+══════════════════════════════════ */
+@media(max-width:900px){
+  .nav-links,.nav-cta{display:none}
+  .burger{display:flex}
+  .sobre-grid,.res-grid{grid-template-columns:1fr;gap:48px}
+  .pgrid{grid-template-columns:repeat(2,1fr)}
+  .lb-mosaic{
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:auto;
+  }
+  .lb-cell:nth-child(1){grid-row:auto;aspect-ratio:4/3;grid-column:span 2}
+  .lb-cell:nth-child(n){aspect-ratio:4/3}
+  .frow{grid-template-columns:1fr}
+  .col-head{flex-direction:column;align-items:flex-start}
+  .hero-scroll-label{display:none}
+}
+@media(max-width:600px){
+  .pgrid{grid-template-columns:1fr}
+  .lb-mosaic{grid-template-columns:1fr}
+  .lb-cell:nth-child(1){grid-column:auto}
+  .lb-cell{aspect-ratio:4/3 !important}
+  .hero-h1{font-size:clamp(80px,24vw,160px)}
+  .hero-deco{opacity:0}
+  .hero-aim{display:none}
+  .rform{padding:20px}
+  .stats{grid-template-columns:1fr 1fr}
+  .ft{flex-direction:column;gap:12px;text-align:center}
+  .ft-links{justify-content:center}
+  .ct-data{gap:20px}
+  #atrig{bottom:82px}
+}
+@media(max-width:380px){
+  .hero-h1{font-size:72px}
+  .hero-btns .btn{font-size:9px;padding:12px 16px}
+}
+
+/* Reduced motion */
+@media(prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="c">
+    <div class="nav-wrap">
+      <a href="#" class="nav-logo">TUR<em>V</em>ISION</a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#sobre" data-i18n="nav.brand">Marca</a></li>
+        <li><a href="#coleccion" data-i18n="nav.col">Colección</a></li>
+        <li><a href="#lookbook">Lookbook</a></li>
+        <li><a href="#reservar" data-i18n="nav.res">Reservar</a></li>
+        <li><a href="#contacto" data-i18n="nav.ct">Contacto</a></li>
+      </ul>
+      <div class="nav-right">
+        <button class="lang-sw" id="langBtn" onclick="toggleLang()">EN</button>
+        <a href="#reservar" class="btn btn-r nav-cta" data-i18n="nav.cta">Reservar prenda</a>
+        <button class="burger" id="burger" aria-label="Menú" onclick="toggleDrawer()">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- DRAWER MOBILE -->
+<div id="drawer">
+  <div class="drawer-links">
+    <a href="#sobre" onclick="closeDrawer()" data-i18n="nav.brand">Marca</a>
+    <a href="#coleccion" onclick="closeDrawer()" data-i18n="nav.col">Colección</a>
+    <a href="#lookbook" onclick="closeDrawer()">Lookbook</a>
+    <a href="#reservar" onclick="closeDrawer()" data-i18n="nav.res">Reservar</a>
+    <a href="#contacto" onclick="closeDrawer()" data-i18n="nav.ct">Contacto</a>
+  </div>
+  <div class="drawer-bottom">
+    <span>TURVISION © 2024</span>
+    <button class="lang-sw" onclick="toggleLang()" id="langBtn2">EN</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-line"></div>
+
+  <!-- Número decorativo -->
+  <div class="hero-deco" aria-hidden="true">001</div>
+
+  <!-- Mira de francotirador SVG -->
+  <svg class="hero-aim" viewBox="0 0 100 100" aria-hidden="true">
+    <circle cx="50" cy="50" r="48"/>
+    <circle cx="50" cy="50" r="30"/>
+    <circle cx="50" cy="50" r="4"/>
+    <line x1="50" y1="0" x2="50" y2="18"/>
+    <line x1="50" y1="82" x2="50" y2="100"/>
+    <line x1="0" y1="50" x2="18" y2="50"/>
+    <line x1="82" y1="50" x2="100" y2="50"/>
+    <!-- Marcas de ángulo -->
+    <line x1="20" y1="20" x2="26" y2="26" stroke-width="0.6"/>
+    <line x1="80" y1="20" x2="74" y2="26" stroke-width="0.6"/>
+    <line x1="20" y1="80" x2="26" y2="74" stroke-width="0.6"/>
+    <line x1="80" y1="80" x2="74" y2="74" stroke-width="0.6"/>
+  </svg>
+
+  <div class="c">
+    <div class="hero-body">
+      <div class="hero-tag">
+        <div class="hero-tag-line"></div>
+        <span class="eyebrow" data-i18n="hero.eyebrow">Nueva colección disponible</span>
+      </div>
+      <h1 class="hero-h1">
+        TUR<span class="out">VISION</span>
+      </h1>
+      <div class="hero-sub-row">
+        <p class="hero-desc" data-i18n="hero.desc">
+          Ropa para quienes no siguen tendencias — las crean.<br>
+          Cortes urbanos, siluetas limpias, gráficos que hablan sin gritar.
+        </p>
+        <div class="hero-btns">
+          <a href="#coleccion" class="btn btn-r" data-i18n="hero.btn1">
+            Ver colección
+            <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+          <a href="#reservar" class="btn btn-g" data-i18n="hero.btn2">Reservar prenda</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-scroll-label" aria-hidden="true">Scroll para explorar</div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-t" id="ticker">
+    <span>TURVISION</span><i>✕</i>
+    <span>WEAR THE VISION</span><i>✕</i>
+    <span>STREETWEAR CON IDENTIDAD</span><i>✕</i>
+    <span>NO SIGAS LA VISIÓN. CRÉALA.</span><i>✕</i>
+    <span>COLECCIÓN 001</span><i>✕</i>
+    <span>EDICIÓN LIMITADA</span><i>✕</i>
+  </div>
+</div>
+
+<!-- SOBRE LA MARCA -->
+<section id="sobre">
+  <div class="c">
+    <div class="sobre-grid">
+      <div class="sobre-img rv">
+        <!-- Sustituye por: <img src="/images/turvision-editorial.jpg" alt="TURVISION"> -->
+        <div class="sobre-img-inner">
+          <span>turvision-editorial.jpg<br>Foto producto / editorial</span>
+        </div>
+        <div class="sobre-stamp mono">TVSN — 2024</div>
+      </div>
+      <div class="sobre-txt rv">
+        <span class="eyebrow" data-i18n="sobre.eyebrow">Sobre la marca</span>
+        <h2 class="sobre-h2" data-i18n="sobre.h2">La calle<br>también<br>tiene<br>futuro.</h2>
+        <p class="sobre-p"><strong data-i18n="sobre.p1strong">TURVISION nace para quienes entienden la ropa como una forma de mirar el mundo.</strong> <span data-i18n="sobre.p1">No es una marca más. Es una identidad visual construida desde la calle hacia arriba.</span></p>
+        <p class="sobre-p" data-i18n="sobre.p2">Cada pieza está diseñada con intención: cortes que construyen presencia, gráficos que cuentan algo, telas que duran. Sin logos vacíos, sin hype sin fondo.</p>
+        <p class="sobre-p" data-i18n="sobre.p3">Streetwear con carácter. Ropa para moverse diferente.</p>
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-n">01<em>.</em></div>
+            <div class="stat-l" data-i18n="stat.1">Primera colección</div>
+          </div>
+          <div class="stat">
+            <div class="stat-n">∞</div>
+            <div class="stat-l" data-i18n="stat.2">Ediciones por venir</div>
+          </div>
+          <div class="stat">
+            <div class="stat-n">100<em>%</em></div>
+            <div class="stat-l" data-i18n="stat.3">Identidad propia</div>
+          </div>
+          <div class="stat">
+            <div class="stat-n">0<em>.</em></div>
+            <div class="stat-l" data-i18n="stat.4">Tendencias seguidas</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COLECCIÓN -->
+<section id="coleccion">
+  <div class="c">
+    <div class="col-head rv">
+      <div>
+        <span class="eyebrow" data-i18n="col.eyebrow">Colección 001</span>
+        <h2 class="col-h2" data-i18n="col.h2">Drop<br>actual.</h2>
+      </div>
+      <div class="tabs" role="tablist">
+        <button class="tab on" onclick="filterCat(this,'todo')" data-i18n="cat.all">Todo</button>
+        <button class="tab" onclick="filterCat(this,'hoodies')">Hoodies</button>
+        <button class="tab" onclick="filterCat(this,'camisetas')" data-i18n="cat.tees">Camisetas</button>
+        <button class="tab" onclick="filterCat(this,'pantalones')" data-i18n="cat.pants">Pantalones</button>
+        <button class="tab" onclick="filterCat(this,'accesorios')" data-i18n="cat.acc">Accesorios</button>
+      </div>
+    </div>
+
+    <div class="pgrid" id="pgrid">
+
+      <div class="pc on" data-cat="hoodies">
+        <div class="pimg">
+          <!-- <img src="/images/turvision-hoodie-blackout.jpg" alt="Hoodie Blackout"> -->
+          <span class="pimg-txt">TVS</span>
+          <span class="pbadge" data-i18n="badge.best">Más vendido</span>
+          <div class="pover"><a href="#reservar" class="btn btn-r" data-i18n="p.reserve">Reservar</a></div>
+        </div>
+        <div class="pinfo">
+          <div class="pname">Hoodie Blackout</div>
+          <div class="pdesc" data-i18n="p1.desc">Sudadera oversize negra con logo frontal minimalista y gráfico trasero de alto impacto. Algodón 380g.</div>
+          <div class="pfoot">
+            <span class="pprice">49 €</span>
+            <a class="plink" href="https://wa.me/34600000000?text=Hola%20TURVISION%2C%20me%20interesa%20el%20Hoodie%20Blackout" target="_blank" data-i18n="p.order">Pedir →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pc on" data-cat="camisetas">
+        <div class="pimg">
+          <!-- <img src="/images/turvision-target-tee.jpg" alt="Target Tee"> -->
+          <span class="pimg-txt">TVS</span>
+          <span class="pbadge" style="background:var(--k2);color:var(--r);border:1px solid var(--r)" data-i18n="badge.icon">Icónico</span>
+          <div class="pover"><a href="#reservar" class="btn btn-r" data-i18n="p.reserve">Reservar</a></div>
+        </div>
+        <div class="pinfo">
+          <div class="pname">Target Tee</div>
+          <div class="pdesc" data-i18n="p2.desc">La camiseta que define TURVISION. Huella dactilar + mira en negro. Gráfico exclusivo de la primera colección.</div>
+          <div class="pfoot">
+            <span class="pprice">32 €</span>
+            <a class="plink" href="https://wa.me/34600000000?text=Hola%20TURVISION%2C%20me%20interesa%20la%20Target%20Tee" target="_blank" data-i18n="p.order">Pedir →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pc on" data-cat="pantalones">
+        <div class="pimg">
+          <!-- <img src="/images/turvision-cargo.jpg" alt="Cargo Future"> -->
+          <span class="pimg-txt">TVS</span>
+          <div class="pover"><a href="#reservar" class="btn btn-r" data-i18n="p.reserve">Reservar</a></div>
+        </div>
+        <div class="pinfo">
+          <div class="pname">Cargo Future</div>
+          <div class="pdesc" data-i18n="p3.desc">Pantalón cargo urbano, bolsillos funcionales, ajuste relajado y acabado mate. Base de cualquier outfit TVSN.</div>
+          <div class="pfoot">
+            <span class="pprice">59 €</span>
+            <a class="plink" href="https://wa.me/34600000000?text=Hola%20TURVISION%2C%20me%20interesa%20el%20Cargo%20Future" target="_blank" data-i18n="p.order">Pedir →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pc on" data-cat="hoodies">
+        <div class="pimg">
+          <!-- <img src="/images/turvision-set-shadow.jpg" alt="Set Shadow Motion"> -->
+          <span class="pimg-txt">TVS</span>
+          <span class="pbadge" data-i18n="badge.lim">Ed. Limitada</span>
+          <div class="pover"><a href="#reservar" class="btn btn-r" data-i18n="p.reserve">Reservar</a></div>
+        </div>
+        <div class="pinfo">
+          <div class="pname">Set Shadow Motion</div>
+          <div class="pdesc" data-i18n="p4.desc">Sudadera + jogger. Conjunto completo para un look TVSN de pies a cabeza. Gráfico lateral exclusivo.</div>
+          <div class="pfoot">
+            <span class="pprice">89 €</span>
+            <a class="plink" href="https://wa.me/34600000000?text=Hola%20TURVISION%2C%20me%20interesa%20el%20Set%20Shadow%20Motion" target="_blank" data-i18n="p.order">Pedir →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pc on" data-cat="camisetas">
+        <div class="pimg">
+          <!-- <img src="/images/turvision-vision-core.jpg" alt="Vision Core Tee"> -->
+          <span class="pimg-txt">TVS</span>
+          <span class="pbadge" data-i18n="badge.new">New Drop</span>
+          <div class="pover"><a href="#reservar" class="btn btn-r" data-i18n="p.reserve">Reservar</a></div>
+        </div>
+        <div class="pinfo">
+          <div class="pname">Vision Core Tee</div>
+          <div class="pdesc" data-i18n="p5.desc">Corte boxy, algodón premium, estampado central con gráfico de marca. Disponible en negro y blanco.</div>
+          <div class="pfoot">
+            <span class="pprice">29 €</span>
+            <a class="plink" href="https://wa.me/34600000000?text=Hola%20TURVISION%2C%20me%20interesa%20la%20Vision%20Core%20Tee" target="_blank" data-i18n="p.order">Pedir →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pc on" data-cat="accesorios">
+        <div class="pimg">
+          <!-- <img src="/images/turvision-cap.jpg" alt="Gorra TVSN"> -->
+          <span class="pimg-txt">TVS</span>
+          <div class="pover"><a href="#reservar" class="btn btn-r" data-i18n="p.reserve">Reservar</a></div>
+        </div>
+        <div class="pinfo">
+          <div class="pname">Gorra TVSN</div>
+          <div class="pdesc" data-i18n="p6.desc">Gorra estructurada negra con bordado frontal del logo TVSN y ajuste trasero. El complemento definitivo.</div>
+          <div class="pfoot">
+            <span class="pprice">22 €</span>
+            <a class="plink" href="https://wa.me/34600000000?text=Hola%20TURVISION%2C%20me%20interesa%20la%20Gorra%20TVSN" target="_blank" data-i18n="p.order">Pedir →</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- LOOKBOOK -->
+<section id="lookbook">
+  <div class="c">
+    <div class="lb-head rv">
+      <span class="eyebrow" data-i18n="lb.eyebrow">Lookbook 001</span>
+      <h2 class="lb-h2" data-i18n="lb.h2">La ropa<br>en su entorno.</h2>
+    </div>
+    <div class="lb-mosaic">
+      <div class="lb-cell rv">
+        <!-- <img src="/images/turvision-lb-01.jpg" style="width:100%;height:100%;object-fit:cover"> -->
+        <div class="lb-inner">
+          <div class="lb-icon">◎</div>
+          <div class="lb-text">Modelo con hoodie<br>oversize — calle nocturna</div>
+        </div>
+        <div class="lb-cap">TVSN — Look 01</div>
+      </div>
+      <div class="lb-cell rv">
+        <!-- <img src="/images/turvision-lb-02.jpg" style="width:100%;height:100%;object-fit:cover"> -->
+        <div class="lb-inner">
+          <div class="lb-icon">⊕</div>
+          <div class="lb-text">Detalle gráfico<br>Target Tee</div>
+        </div>
+        <div class="lb-cap">Detalle — Graphic</div>
+      </div>
+      <div class="lb-cell rv">
+        <!-- <img src="/images/turvision-lb-03.jpg" style="width:100%;height:100%;object-fit:cover"> -->
+        <div class="lb-inner">
+          <div class="lb-icon">⊗</div>
+          <div class="lb-text">Bordado frontal<br>Gorra TVSN</div>
+        </div>
+        <div class="lb-cap">Detalle — Cap</div>
+      </div>
+      <div class="lb-cell rv">
+        <!-- <img src="/images/turvision-lb-04.jpg" style="width:100%;height:100%;object-fit:cover"> -->
+        <div class="lb-inner">
+          <div class="lb-icon">▣</div>
+          <div class="lb-text">Outfit completo<br>Cargo + Shadow</div>
+        </div>
+        <div class="lb-cap">TVSN — Full Look 02</div>
+      </div>
+      <div class="lb-cell rv">
+        <!-- <img src="/images/turvision-lb-05.jpg" style="width:100%;height:100%;object-fit:cover"> -->
+        <div class="lb-inner">
+          <div class="lb-icon">◈</div>
+          <div class="lb-text">Editorial fondo oscuro<br>Vision Core</div>
+        </div>
+        <div class="lb-cap">Editorial — Core</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESERVAR -->
+<section id="reservar">
+  <div class="c">
+    <div class="res-grid">
+      <div class="rv">
+        <span class="eyebrow" data-i18n="res.eyebrow">Reserva tu prenda</span>
+        <h2 class="res-h2" data-i18n="res.h2">Tu talla.<br>Tu drop.</h2>
+        <p class="res-p" data-i18n="res.p">Stock limitado. Rellena el formulario y te confirmamos disponibilidad por WhatsApp en menos de 24h.</p>
+        <div class="steps">
+          <div class="step">
+            <div class="step-n">01</div>
+            <div>
+              <strong class="step-tit" data-i18n="step1.t">Elige tu prenda</strong>
+              <span class="step-sub" data-i18n="step1.s">Indica qué pieza te interesa, talla y color.</span>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-n">02</div>
+            <div>
+              <strong class="step-tit" data-i18n="step2.t">Enviamos el mensaje</strong>
+              <span class="step-sub" data-i18n="step2.s">Tu pedido llega directo a nuestro WhatsApp.</span>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-n">03</div>
+            <div>
+              <strong class="step-tit" data-i18n="step3.t">Confirmamos disponibilidad</strong>
+              <span class="step-sub" data-i18n="step3.s">Te respondemos en menos de 24h y cerramos el pedido.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rform rv">
+        <div class="frow">
+          <div class="fg">
+            <label data-i18n="form.name">Nombre</label>
+            <input type="text" id="rn" placeholder="Tu nombre" autocomplete="given-name">
+          </div>
+          <div class="fg">
+            <label data-i18n="form.phone">Teléfono</label>
+            <input type="tel" id="rt" placeholder="+34 600 000 000" autocomplete="tel">
+          </div>
+        </div>
+        <div class="fg">
+          <label data-i18n="form.product">Prenda de interés</label>
+          <select id="rp">
+            <option value="" data-i18n="form.select">Selecciona una prenda</option>
+            <option>Hoodie Blackout</option>
+            <option>Target Tee</option>
+            <option>Vision Core Tee</option>
+            <option>Cargo Future Pants</option>
+            <option>Set Shadow Motion</option>
+            <option>Gorra TVSN</option>
+            <option data-i18n="form.other">Otra / consulta</option>
+          </select>
+        </div>
+        <div class="frow">
+          <div class="fg">
+            <label data-i18n="form.size">Talla</label>
+            <select id="rs">
+              <option value="" data-i18n="form.size">Talla</option>
+              <option>XS</option><option>S</option><option>M</option>
+              <option>L</option><option>XL</option><option>XXL</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label data-i18n="form.color">Color</label>
+            <select id="rc">
+              <option value="" data-i18n="form.color">Color</option>
+              <option data-i18n="c.black">Negro</option>
+              <option data-i18n="c.white">Blanco</option>
+              <option data-i18n="c.grey">Gris</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg">
+          <label data-i18n="form.qty">Cantidad</label>
+          <input type="number" id="rq" value="1" min="1" max="10">
+        </div>
+        <div class="fg">
+          <label data-i18n="form.note">Mensaje adicional</label>
+          <textarea id="rm" data-i18n-placeholder="form.noteph" placeholder="Consultas sobre tallas, envíos, personalizaciones…"></textarea>
+        </div>
+        <button class="btn btn-r fbtn" onclick="enviar()" data-i18n="form.send">
+          Reservar por WhatsApp →
+        </button>
+        <p class="fnote" data-i18n="form.note2">Te respondemos en menos de 24h · Stock limitado</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section id="contacto">
+  <div class="ct-inner c">
+    <div class="rv">
+      <span class="eyebrow" data-i18n="ct.eyebrow">Habla con nosotros</span>
+      <h2 class="ct-h2">
+        ¿Tienes<span class="out" data-i18n="ct.h2b">preguntas?</span>
+      </h2>
+      <p class="ct-sub" data-i18n="ct.sub">Escríbenos directamente por WhatsApp. Respondemos rápido.</p>
+      <div class="ct-btns">
+        <a href="https://wa.me/34600000000?text=Hola%20TURVISION%2C%20quiero%20consultar%20disponibilidad%20de%20una%20prenda." target="_blank" class="btn btn-r" id="ct-wa-btn" data-i18n="ct.btn1">
+          Escribir por WhatsApp
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <a href="#coleccion" class="btn btn-g" data-i18n="ct.btn2">Ver colección</a>
+      </div>
+    </div>
+    <div class="ct-data rv">
+      <div>
+        <div class="ct-item-l">WhatsApp</div>
+        <div class="ct-item-v" id="disp-wa">+34 600 000 000</div>
+      </div>
+      <div>
+        <div class="ct-item-l">Instagram</div>
+        <div class="ct-item-v">@turvision</div>
+      </div>
+      <div>
+        <div class="ct-item-l" data-i18n="ct.stock">Stock</div>
+        <div class="ct-item-v" data-i18n="ct.stockval">Edición limitada</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="c">
+    <div class="ft">
+      <div class="ft-logo">TUR<em>V</em>ISION</div>
+      <div class="ft-links">
+        <a href="#sobre" data-i18n="nav.brand">Marca</a>
+        <a href="#coleccion" data-i18n="nav.col">Colección</a>
+        <a href="#reservar" data-i18n="nav.res">Reservar</a>
+        <a href="#contacto" data-i18n="nav.ct">Contacto</a>
+      </div>
+      <div class="ft-copy">© 2024 TURVISION</div>
+    </div>
+  </div>
+</footer>
+
+<!-- ADMIN TRIGGER -->
+<button id="atrig" onclick="openAdmin()" title="Admin panel" aria-label="Admin">⚙</button>
+
+<!-- ADMIN MODAL -->
+<div class="overlay" id="adminModal">
+  <div class="modal">
+    <button class="modal-x" onclick="closeAdmin()">✕</button>
+    <div class="modal-tit">ADMIN</div>
+    <div class="modal-sub">Panel · TURVISION</div>
+    <div class="atabs">
+      <button class="atab on" onclick="switchPanel(this,'pm')">Marca</button>
+      <button class="atab" onclick="switchPanel(this,'pc2')">Contacto</button>
+    </div>
+    <div class="apanel on" id="pm">
+      <div class="ag">
+        <label>Nombre de la marca</label>
+        <input type="text" id="an" placeholder="TURVISION">
+      </div>
+      <div class="ag">
+        <label>Frase hero</label>
+        <input type="text" id="af" placeholder="Wear the vision.">
+      </div>
+      <button class="btn btn-r asave" onclick="saveMarca()">Guardar</button>
+      <p class="anote">Guardado localmente en este navegador.</p>
+    </div>
+    <div class="apanel" id="pc2">
+      <div class="ag">
+        <label>WhatsApp (solo dígitos con prefijo)</label>
+        <input type="text" id="aw" placeholder="34600000000">
+      </div>
+      <div class="ag">
+        <label>Instagram (sin @)</label>
+        <input type="text" id="ai" placeholder="turvision">
+      </div>
+      <button class="btn btn-r asave" onclick="saveContacto()">Guardar</button>
+      <p class="anote">El número actualiza todos los botones de WhatsApp.</p>
+    </div>
+  </div>
+</div>
+
+<!-- WA FLOAT -->
+<a id="waf" href="https://wa.me/34600000000?text=Hola%20TURVISION%2C%20quiero%20consultar%20disponibilidad%20de%20una%20prenda." target="_blank" aria-label="WhatsApp">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+/* ============================================
+   TURVISION — JS
+   i18n · admin · filtros · formulario
+============================================ */
+
+/* ─── i18n ─── */
+const i18n = {
+  es:{
+    'nav.brand':'Marca','nav.col':'Colección','nav.res':'Reservar',
+    'nav.ct':'Contacto','nav.cta':'Reservar prenda',
+    'hero.eyebrow':'Nueva colección disponible',
+    'hero.desc':'Ropa para quienes no siguen tendencias — las crean.<br>Cortes urbanos, siluetas limpias, gráficos que hablan sin gritar.',
+    'hero.btn1':'Ver colección','hero.btn2':'Reservar prenda',
+    'sobre.eyebrow':'Sobre la marca',
+    'sobre.h2':'La calle<br>también<br>tiene<br>futuro.',
+    'sobre.p1strong':'TURVISION nace para quienes entienden la ropa como una forma de mirar el mundo.',
+    'sobre.p1':'No es una marca más. Es una identidad visual construida desde la calle hacia arriba.',
+    'sobre.p2':'Cada pieza está diseñada con intención: cortes que construyen presencia, gráficos que cuentan algo, telas que duran.',
+    'sobre.p3':'Streetwear con carácter. Ropa para moverse diferente.',
+    'stat.1':'Primera colección','stat.2':'Ediciones por venir',
+    'stat.3':'Identidad propia','stat.4':'Tendencias seguidas',
+    'col.eyebrow':'Colección 001','col.h2':'Drop<br>actual.',
+    'cat.all':'Todo','cat.tees':'Camisetas','cat.pants':'Pantalones','cat.acc':'Accesorios',
+    'badge.best':'Más vendido','badge.icon':'Icónico','badge.lim':'Ed. Limitada','badge.new':'New Drop',
+    'p.reserve':'Reservar','p.order':'Pedir →',
+    'p1.desc':'Sudadera oversize negra con logo frontal minimalista y gráfico trasero de alto impacto. Algodón 380g.',
+    'p2.desc':'La camiseta que define TURVISION. Huella dactilar + mira en negro. Gráfico exclusivo de la primera colección.',
+    'p3.desc':'Pantalón cargo urbano, bolsillos funcionales, ajuste relajado y acabado mate. Base de cualquier outfit TVSN.',
+    'p4.desc':'Sudadera + jogger. Conjunto completo para un look TVSN de pies a cabeza. Gráfico lateral exclusivo.',
+    'p5.desc':'Corte boxy, algodón premium, estampado central con gráfico de marca. Disponible en negro y blanco.',
+    'p6.desc':'Gorra estructurada negra con bordado frontal del logo TVSN y ajuste trasero.',
+    'lb.eyebrow':'Lookbook 001','lb.h2':'La ropa<br>en su entorno.',
+    'res.eyebrow':'Reserva tu prenda','res.h2':'Tu talla.<br>Tu drop.',
+    'res.p':'Stock limitado. Rellena el formulario y te confirmamos disponibilidad por WhatsApp en menos de 24h.',
+    'step1.t':'Elige tu prenda','step1.s':'Indica qué pieza te interesa, talla y color.',
+    'step2.t':'Enviamos el mensaje','step2.s':'Tu pedido llega directo a nuestro WhatsApp.',
+    'step3.t':'Confirmamos disponibilidad','step3.s':'Te respondemos en menos de 24h y cerramos el pedido.',
+    'form.name':'Nombre','form.phone':'Teléfono','form.product':'Prenda de interés',
+    'form.select':'Selecciona una prenda','form.other':'Otra / consulta',
+    'form.size':'Talla','form.color':'Color','form.qty':'Cantidad',
+    'form.note':'Mensaje adicional','form.noteph':'Consultas sobre tallas, envíos, personalizaciones…',
+    'form.send':'Reservar por WhatsApp →','form.note2':'Te respondemos en menos de 24h · Stock limitado',
+    'form.alert':'Por favor, introduce tu nombre y selecciona una prenda.',
+    'c.black':'Negro','c.white':'Blanco','c.grey':'Gris',
+    'ct.eyebrow':'Habla con nosotros','ct.h2b':'preguntas?',
+    'ct.sub':'Escríbenos directamente por WhatsApp. Respondemos rápido.',
+    'ct.btn1':'Escribir por WhatsApp','ct.btn2':'Ver colección',
+    'ct.stock':'Stock','ct.stockval':'Edición limitada',
+    'wa.msg':'Hola TURVISION, quiero consultar disponibilidad de una prenda.',
+    'wa.form':'Hola TURVISION 👋\n\nSoy {n}{t}.\nQuiero reservar: *{p}*\nTalla: {s} · Color: {c} · Cantidad: {q}{m}',
+  },
+  en:{
+    'nav.brand':'Brand','nav.col':'Collection','nav.res':'Reserve',
+    'nav.ct':'Contact','nav.cta':'Reserve item',
+    'hero.eyebrow':'New collection available',
+    'hero.desc':'Clothes for those who don\'t follow trends — they create them.<br>Urban cuts, clean silhouettes, graphics that speak without screaming.',
+    'hero.btn1':'View collection','hero.btn2':'Reserve item',
+    'sobre.eyebrow':'About the brand',
+    'sobre.h2':'The street<br>also has<br>a future.',
+    'sobre.p1strong':'TURVISION was born for those who understand clothing as a way of seeing the world.',
+    'sobre.p1':'Not just another brand. It\'s a visual identity built from the ground up.',
+    'sobre.p2':'Every piece is designed with intention: cuts that build presence, graphics that tell something, fabrics that last.',
+    'sobre.p3':'Streetwear with character. Clothes to move differently.',
+    'stat.1':'First collection','stat.2':'More drops coming',
+    'stat.3':'Own identity','stat.4':'Trends followed',
+    'col.eyebrow':'Collection 001','col.h2':'Current<br>drop.',
+    'cat.all':'All','cat.tees':'T-Shirts','cat.pants':'Trousers','cat.acc':'Accessories',
+    'badge.best':'Best seller','badge.icon':'Iconic','badge.lim':'Lim. Edition','badge.new':'New Drop',
+    'p.reserve':'Reserve','p.order':'Order →',
+    'p1.desc':'Oversized black hoodie with minimalist front logo and high-impact back graphic. 380g cotton.',
+    'p2.desc':'The T-shirt that defines TURVISION. Fingerprint + crosshair in black. Exclusive graphic from the first collection.',
+    'p3.desc':'Urban cargo trousers with functional pockets, relaxed fit and matte finish. Base for any TVSN outfit.',
+    'p4.desc':'Hoodie + jogger. Full set for a head-to-toe TVSN look. Exclusive side graphic.',
+    'p5.desc':'Boxy cut, premium cotton, central brand graphic print. Available in black and white.',
+    'p6.desc':'Structured black cap with embroidered TVSN logo on the front and rear adjustment.',
+    'lb.eyebrow':'Lookbook 001','lb.h2':'The clothes<br>in their environment.',
+    'res.eyebrow':'Reserve your item','res.h2':'Your size.<br>Your drop.',
+    'res.p':'Limited stock. Fill in the form and we\'ll confirm availability via WhatsApp within 24h.',
+    'step1.t':'Choose your item','step1.s':'Tell us which piece, size and colour you want.',
+    'step2.t':'We send the message','step2.s':'Your order goes directly to our WhatsApp.',
+    'step3.t':'We confirm availability','step3.s':'We reply within 24h and close the order.',
+    'form.name':'Name','form.phone':'Phone','form.product':'Item of interest',
+    'form.select':'Select an item','form.other':'Other / enquiry',
+    'form.size':'Size','form.color':'Colour','form.qty':'Quantity',
+    'form.note':'Additional message','form.noteph':'Questions about sizes, shipping, customisations…',
+    'form.send':'Reserve via WhatsApp →','form.note2':'We reply within 24h · Limited stock',
+    'form.alert':'Please enter your name and select an item.',
+    'c.black':'Black','c.white':'White','c.grey':'Grey',
+    'ct.eyebrow':'Talk to us','ct.h2b':'questions?',
+    'ct.sub':'Write to us directly on WhatsApp. We reply fast.',
+    'ct.btn1':'Write on WhatsApp','ct.btn2':'View collection',
+    'ct.stock':'Stock','ct.stockval':'Limited edition',
+    'wa.msg':'Hello TURVISION, I want to check availability for an item.',
+    'wa.form':'Hello TURVISION 👋\n\nI\'m {n}{t}.\nI want to reserve: *{p}*\nSize: {s} · Colour: {c} · Quantity: {q}{m}',
+  }
+};
+
+let lang = localStorage.getItem('tvsn_lang') || 'es';
+
+function t(k){ return i18n[lang][k] || i18n['es'][k] || k }
+
+function applyLang(){
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k = el.dataset.i18n;
+    const val = t(k);
+    if(el.tagName==='INPUT'||el.tagName==='TEXTAREA') el.placeholder=val;
+    else el.innerHTML = val;
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{
+    el.placeholder = t(el.dataset.i18nPlaceholder);
+  });
+  // Botones de idioma
+  const nextLang = lang==='es'?'EN':'ES';
+  document.querySelectorAll('#langBtn,#langBtn2').forEach(b=>b.textContent=nextLang);
+}
+
+function toggleLang(){
+  lang = lang==='es'?'en':'es';
+  localStorage.setItem('tvsn_lang', lang);
+  applyLang();
+}
+
+/* ─── Config WA ─── */
+const SK = 'tvsn_cfg';
+function getCfg(){ try{return JSON.parse(localStorage.getItem(SK)||'{}')}catch(e){return{}} }
+function saveCfg(d){ localStorage.setItem(SK, JSON.stringify({...getCfg(),...d})) }
+
+function applyWA(){
+  const c = getCfg();
+  const num = c.wa || '34600000000';
+  const msg = encodeURIComponent(t('wa.msg'));
+  const url = `https://wa.me/${num}?text=${msg}`;
+  document.getElementById('waf').href = url;
+  document.getElementById('ct-wa-btn').href = url;
+  if(c.wa) document.getElementById('disp-wa').textContent = '+'+num;
+}
+
+/* ─── Nav ─── */
+const nav = document.getElementById('nav');
+let lastY = 0;
+window.addEventListener('scroll', ()=>{
+  nav.classList.toggle('up', window.scrollY > 50);
+  lastY = window.scrollY;
+}, {passive:true});
+
+/* ─── Drawer ─── */
+const drawer = document.getElementById('drawer');
+const burgerBtn = document.getElementById('burger');
+let drawerOpen = false;
+function toggleDrawer(){
+  drawerOpen = !drawerOpen;
+  drawer.classList.toggle('open', drawerOpen);
+  burgerBtn.classList.toggle('x', drawerOpen);
+  document.body.style.overflow = drawerOpen ? 'hidden' : '';
+}
+function closeDrawer(){
+  drawerOpen = false;
+  drawer.classList.remove('open');
+  burgerBtn.classList.remove('x');
+  document.body.style.overflow = '';
+}
+
+/* ─── Filtro colección ─── */
+function filterCat(btn, cat){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.pc').forEach(c=>{
+    const show = cat==='todo' || c.dataset.cat===cat;
+    c.classList.toggle('on', show);
+  });
+}
+
+/* ─── Formulario reserva ─── */
+function enviar(){
+  const n = document.getElementById('rn').value.trim();
+  const tel = document.getElementById('rt').value.trim();
+  const p = document.getElementById('rp').value;
+  const s = document.getElementById('rs').value;
+  const c = document.getElementById('rc').value;
+  const q = document.getElementById('rq').value;
+  const m = document.getElementById('rm').value.trim();
+
+  if(!n || !p){
+    alert(t('form.alert'));
+    return;
+  }
+
+  const cfg = getCfg();
+  const num = cfg.wa || '34600000000';
+  const tmpl = t('wa.form');
+  const txt = tmpl
+    .replace('{n}', n)
+    .replace('{t}', tel ? ` (${tel})` : '')
+    .replace('{p}', p)
+    .replace('{s}', s || '—')
+    .replace('{c}', c || '—')
+    .replace('{q}', q)
+    .replace('{m}', m ? `\n\n${lang==='es'?'Nota':'Note'}: ${m}` : '');
+
+  window.open(`https://wa.me/${num}?text=${encodeURIComponent(txt)}`, '_blank');
+}
+
+/* ─── Admin ─── */
+function openAdmin(){
+  document.getElementById('adminModal').classList.add('on');
+  const c = getCfg();
+  if(c.wa) document.getElementById('aw').value = c.wa;
+  if(c.ig) document.getElementById('ai').value = c.ig;
+  if(c.nombre) document.getElementById('an').value = c.nombre;
+  if(c.frase) document.getElementById('af').value = c.frase;
+}
+function closeAdmin(){ document.getElementById('adminModal').classList.remove('on') }
+function switchPanel(btn, id){
+  document.querySelectorAll('.atab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.apanel').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById(id).classList.add('on');
+}
+function saveMarca(){
+  saveCfg({ nombre: document.getElementById('an').value, frase: document.getElementById('af').value });
+  closeAdmin();
+}
+function saveContacto(){
+  const wa = document.getElementById('aw').value.replace(/\D/g,'');
+  saveCfg({ wa, ig: document.getElementById('ai').value });
+  applyWA();
+  closeAdmin();
+}
+document.getElementById('adminModal').addEventListener('click', function(e){
+  if(e.target===this) closeAdmin();
+});
+
+/* ─── Scroll reveal ─── */
+const rvEls = document.querySelectorAll('.rv');
+const rvObs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){ e.target.classList.add('vis'); rvObs.unobserve(e.target) }
+  });
+},{threshold:0.08});
+rvEls.forEach(el=>rvObs.observe(el));
+
+/* ─── Ticker duplicate ─── */
+(function(){
+  const tk = document.getElementById('ticker');
+  if(tk){ tk.innerHTML += tk.innerHTML }
+})();
+
+/* ─── Init ─── */
+applyLang();
+applyWA();
+</script>
+</body>
+</html>
