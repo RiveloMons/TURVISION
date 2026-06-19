@@ -1137,6 +1137,7 @@ footer{border-top:1px solid var(--b);padding:28px 0}
         <button class="atab"     onclick="switchPanel(this,'pa-hero')">Hero</button>
         <button class="atab"     onclick="switchPanel(this,'pa-sobre')">Sobre</button>
         <button class="atab"     onclick="switchPanel(this,'pa-prod')">Productos</button>
+        <button class="atab"     onclick="switchPanel(this,'pa-fotos')">Fotos</button>
         <button class="atab"     onclick="switchPanel(this,'pa-res')">Reservas</button>
         <button class="atab"     onclick="switchPanel(this,'pa-ct')">Contacto</button>
         <button class="atab"     onclick="switchPanel(this,'pa-seg')">Seguridad</button>
@@ -1199,6 +1200,49 @@ footer{border-top:1px solid var(--b);padding:28px 0}
         <p class="anote">El nombre del producto actualiza también el enlace de WhatsApp.</p>
       </div>
 
+      <!-- ── FOTOS ── -->
+      <div class="apanel" id="pa-fotos">
+        <div class="asec">Fotos de la marca</div>
+        <p class="anote" style="text-align:left;margin-bottom:16px;color:var(--w2)">Pega la URL de cada foto o sube una imagen desde tu dispositivo. Las fotos se aplican en tiempo real a la web.</p>
+
+        <!-- Foto Hero (fondo) -->
+        <div class="ag">
+          <label>Foto hero (fondo principal)</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="text" id="f-hero-url" placeholder="https://... o deja vacío para fondo oscuro">
+            <label style="cursor:pointer;flex-shrink:0;padding:10px 12px;background:var(--k);border:1px solid var(--b);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--w2);white-space:nowrap">
+              📎 Subir<input type="file" accept="image/*" style="display:none" onchange="loadImgFile(this,'f-hero-url')">
+            </label>
+          </div>
+          <div id="f-hero-prev" style="margin-top:8px;display:none"><img style="width:100%;height:120px;object-fit:cover;border:1px solid var(--b)"></div>
+        </div>
+
+        <!-- Foto Sobre -->
+        <div class="ag">
+          <label>Foto sección "Sobre la marca"</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="text" id="f-sobre-url" placeholder="https://...">
+            <label style="cursor:pointer;flex-shrink:0;padding:10px 12px;background:var(--k);border:1px solid var(--b);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--w2);white-space:nowrap">
+              📎 Subir<input type="file" accept="image/*" style="display:none" onchange="loadImgFile(this,'f-sobre-url')">
+            </label>
+          </div>
+          <div id="f-sobre-prev" style="margin-top:8px;display:none"><img style="width:100%;height:120px;object-fit:cover;border:1px solid var(--b)"></div>
+        </div>
+
+        <!-- Lookbook 5 fotos -->
+        <hr class="asep">
+        <div class="asec">Lookbook (5 fotos)</div>
+        <div id="f-lb-fields"></div>
+
+        <!-- Productos 6 fotos -->
+        <hr class="asep">
+        <div class="asec">Productos (6 fotos)</div>
+        <div id="f-prod-fields"></div>
+
+        <button class="btn btn-r asave" onclick="saveSection('fotos')">Guardar fotos</button>
+        <p class="anote">Al subir desde dispositivo la imagen se guarda en Base64 en el navegador. Para producción usa una URL pública.</p>
+      </div>
+
       <!-- ── RESERVAS ── -->
       <div class="apanel" id="pa-res">
         <div class="asec">Sección de reservas</div>
@@ -1220,7 +1264,13 @@ footer{border-top:1px solid var(--b);padding:28px 0}
       <!-- ── CONTACTO ── -->
       <div class="apanel" id="pa-ct">
         <div class="asec">Contacto y redes</div>
-        <div class="ag"><label>WhatsApp (solo dígitos con prefijo país)</label><input type="text" id="a-wa" placeholder="34600000000"></div>
+        <div class="ag"><label>WhatsApp principal (solo dígitos con prefijo país)</label><input type="text" id="a-wa" placeholder="34600000000"></div>
+        <div class="ag">
+          <label>WhatsApp secundario — propietario 2 (opcional)</label>
+          <input type="text" id="a-wa2" placeholder="34611111111">
+          <p style="font-family:var(--fm);font-size:8px;letter-spacing:.08em;color:var(--w2);margin-top:6px;line-height:1.6">Si añades un segundo número, el formulario de reservas enviará el mensaje a los DOS WhatsApp. Deja vacío para no usar.</p>
+        </div>
+        <div class="ag"><label>Nombre propietario 2 (aparece en el formulario)</label><input type="text" id="a-wa2-nombre" placeholder="Ej: Carlos"></div>
         <div class="ag"><label>Instagram (sin @)</label><input type="text" id="a-ig" placeholder="turvision"></div>
         <div class="ag"><label>Texto stock/horario visible</label><input type="text" id="a-stocktxt" placeholder="Edición limitada"></div>
         <hr class="asep">
@@ -1229,7 +1279,7 @@ footer{border-top:1px solid var(--b);padding:28px 0}
         <div class="ag"><label>Título línea 2 (outline)</label><input type="text" id="a-ct-t2" placeholder="preguntas?"></div>
         <div class="ag"><label>Subtexto</label><textarea id="a-ct-sub" placeholder="Escríbenos directamente…"></textarea></div>
         <button class="btn btn-r asave" onclick="saveSection('contacto')">Guardar contacto</button>
-        <p class="anote">El número de WhatsApp actualiza todos los botones de la web.</p>
+        <p class="anote">El número principal actualiza el botón flotante y la sección de contacto.</p>
       </div>
 
       <!-- ── SEGURIDAD ── -->
@@ -1497,11 +1547,23 @@ function loadAllFields(){
 
   /* CONTACTO */
   setVal('a-wa', c.wa||'34600000000');
+  setVal('a-wa2', c.wa2||'');
+  setVal('a-wa2-nombre', c.wa2nombre||'');
   setVal('a-ig', c.ig||'turvision');
   setVal('a-stocktxt', c.stocktxt||'Edición limitada');
   setVal('a-ct-t1',  c.ct_t1 ||'¿Tienes');
   setVal('a-ct-t2',  c.ct_t2 ||'preguntas?');
   setVal('a-ct-sub', c.ct_sub||'Escríbenos directamente por WhatsApp. Respondemos rápido.');
+
+  /* FOTOS */
+  setVal('f-hero-url',  c.f_hero ||'');
+  setVal('f-sobre-url', c.f_sobre||'');
+  /* Render lb + prod photo fields */
+  renderFotoFields();
+  if(c.f_lb)   c.f_lb.forEach((url,i)=>{ setVal(`f-lb-${i}`,url); showPrev(`f-lb-${i}`,url); });
+  if(c.f_prod) c.f_prod.forEach((url,i)=>{ setVal(`f-prod-${i}`,url); showPrev(`f-prod-${i}`,url); });
+  showPrev('f-hero-url',  c.f_hero ||'');
+  showPrev('f-sobre-url', c.f_sobre||'');
 }
 
 function setVal(id,val){ const el=document.getElementById(id); if(el) el.value=val; }
@@ -1661,10 +1723,12 @@ function saveSection(sec){
   }
 
   if(sec==='contacto'){
-    const wa = v('a-wa').replace(/\D/g,'');
-    const ig = v('a-ig');
+    const wa  = v('a-wa').replace(/\D/g,'');
+    const wa2 = v('a-wa2').replace(/\D/g,'');
+    const wa2nombre = v('a-wa2-nombre');
+    const ig  = v('a-ig');
     saveCfg({
-      wa, ig,
+      wa, wa2, wa2nombre, ig,
       stocktxt: v('a-stocktxt'),
       ct_t1: v('a-ct-t1'), ct_t2: v('a-ct-t2'), ct_sub: v('a-ct-sub'),
     });
@@ -1679,6 +1743,15 @@ function saveSection(sec){
     if(cth2) cth2.innerHTML = `${v('a-ct-t1')}<span class="out">${v('a-ct-t2')}</span>`;
     const ctsub = document.querySelector('.ct-sub');
     if(ctsub) ctsub.textContent = v('a-ct-sub');
+  }
+
+  if(sec==='fotos'){
+    const heroUrl  = v('f-hero-url')  || getCfg().f_hero  || '';
+    const sobreUrl = v('f-sobre-url') || getCfg().f_sobre || '';
+    const lbUrls   = [0,1,2,3,4].map(i=> v(`f-lb-${i}`) || (getCfg().f_lb||[])[i] || '');
+    const prodUrls = [0,1,2,3,4,5].map(i=> v(`f-prod-${i}`) || (getCfg().f_prod||[])[i] || '');
+    saveCfg({ f_hero:heroUrl, f_sobre:sobreUrl, f_lb:lbUrls, f_prod:prodUrls });
+    applyFotos({f_hero:heroUrl, f_sobre:sobreUrl, f_lb:lbUrls, f_prod:prodUrls});
   }
 
   /* Toast */
@@ -1791,6 +1864,8 @@ function applyStoredConfig(){
   if(c.stocktxt){const el=document.querySelector('[data-i18n="ct.stockval"]');if(el)el.textContent=c.stocktxt;}
   if(c.ig){document.querySelectorAll('.ct-item-v').forEach((el,i)=>{if(i===1)el.textContent='@'+c.ig;});}
   applyWA();
+  /* Fotos */
+  if(c.f_hero||c.f_sobre||c.f_lb||c.f_prod) applyFotos(c);
 }
 
 /* ─── Nav ─── */
@@ -1844,7 +1919,6 @@ function enviar(){
   }
 
   const cfg = getCfg();
-  const num = cfg.wa || '34600000000';
   const tmpl = t('wa.form');
   const txt = tmpl
     .replace('{n}', n)
@@ -1855,38 +1929,124 @@ function enviar(){
     .replace('{q}', q)
     .replace('{m}', m ? `\n\n${lang==='es'?'Nota':'Note'}: ${m}` : '');
 
-  window.open(`https://wa.me/${num}?text=${encodeURIComponent(txt)}`, '_blank');
+  const num1 = cfg.wa || '34600000000';
+  window.open(`https://wa.me/${num1}?text=${encodeURIComponent(txt)}`, '_blank');
+
+  /* Segundo WhatsApp si está configurado */
+  if(cfg.wa2){
+    const nombre2 = cfg.wa2nombre ? ` (${cfg.wa2nombre})` : '';
+    const txt2 = txt + (nombre2 ? `\n\n[Copia para propietario${nombre2}]` : '');
+    setTimeout(()=>{
+      window.open(`https://wa.me/${cfg.wa2}?text=${encodeURIComponent(txt2)}`, '_blank');
+    }, 800);
+  }
 }
 
-/* ─── Admin ─── */
-function openAdmin(){
-  document.getElementById('adminModal').classList.add('on');
-  const c = getCfg();
-  if(c.wa) document.getElementById('aw').value = c.wa;
-  if(c.ig) document.getElementById('ai').value = c.ig;
-  if(c.nombre) document.getElementById('an').value = c.nombre;
-  if(c.frase) document.getElementById('af').value = c.frase;
+/* ── Fotos helpers ── */
+function renderFotoFields(){
+  const lbNames = ['Look 01 — Hoodie calle','Detalle gráfico','Detalle gorra','Outfit completo','Editorial'];
+  const prodNames = ['Hoodie Blackout','Target Tee','Cargo Future','Set Shadow Motion','Vision Core Tee','Gorra TVSN'];
+  const lbC  = document.getElementById('f-lb-fields');
+  const prC  = document.getElementById('f-prod-fields');
+  if(lbC) lbC.innerHTML = lbNames.map((n,i)=>`
+    <div class="ag"><label>Lookbook ${i+1} — ${n}</label>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="text" id="f-lb-${i}" placeholder="https://...">
+        <label style="cursor:pointer;flex-shrink:0;padding:10px 12px;background:var(--k);border:1px solid var(--b);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--w2);white-space:nowrap">
+          📎 Subir<input type="file" accept="image/*" style="display:none" onchange="loadImgFile(this,'f-lb-${i}')">
+        </label>
+      </div>
+      <div id="f-lb-${i}-prev" style="margin-top:6px;display:none"><img style="width:100%;height:90px;object-fit:cover;border:1px solid var(--b)"></div>
+    </div>`).join('');
+  if(prC) prC.innerHTML = prodNames.map((n,i)=>`
+    <div class="ag"><label>Producto ${i+1} — ${n}</label>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="text" id="f-prod-${i}" placeholder="https://...">
+        <label style="cursor:pointer;flex-shrink:0;padding:10px 12px;background:var(--k);border:1px solid var(--b);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--w2);white-space:nowrap">
+          📎 Subir<input type="file" accept="image/*" style="display:none" onchange="loadImgFile(this,'f-prod-${i}')">
+        </label>
+      </div>
+      <div id="f-prod-${i}-prev" style="margin-top:6px;display:none"><img style="width:100%;height:90px;object-fit:cover;border:1px solid var(--b)"></div>
+    </div>`).join('');
 }
-function closeAdmin(){ document.getElementById('adminModal').classList.remove('on') }
-function switchPanel(btn, id){
-  document.querySelectorAll('.atab').forEach(t=>t.classList.remove('on'));
-  document.querySelectorAll('.apanel').forEach(p=>p.classList.remove('on'));
-  btn.classList.add('on');
-  document.getElementById(id).classList.add('on');
+
+function loadImgFile(input, targetId){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e=>{
+    const url = e.target.result;
+    const field = document.getElementById(targetId);
+    if(field){ field.value = url; showPrev(targetId, url); }
+  };
+  reader.readAsDataURL(file);
 }
-function saveMarca(){
-  saveCfg({ nombre: document.getElementById('an').value, frase: document.getElementById('af').value });
-  closeAdmin();
+
+function showPrev(fieldId, url){
+  /* fieldId puede ser f-hero-url, f-sobre-url, f-lb-0, f-prod-0 */
+  const baseId = fieldId.replace('-url','');
+  const prevId = baseId + '-prev';
+  const prevDiv = document.getElementById(prevId);
+  if(!prevDiv) return;
+  if(url){
+    prevDiv.style.display='block';
+    const img = prevDiv.querySelector('img');
+    if(img) img.src = url;
+  } else {
+    prevDiv.style.display='none';
+  }
 }
-function saveContacto(){
-  const wa = document.getElementById('aw').value.replace(/\D/g,'');
-  saveCfg({ wa, ig: document.getElementById('ai').value });
-  applyWA();
-  closeAdmin();
+
+function applyFotos(c){
+  /* Hero bg */
+  const hero = document.getElementById('hero');
+  if(hero && c.f_hero){
+    hero.style.backgroundImage = `url('${c.f_hero}')`;
+    hero.style.backgroundSize  = 'cover';
+    hero.style.backgroundPosition = 'center';
+  } else if(hero){
+    hero.style.backgroundImage = '';
+  }
+  /* Sobre img */
+  const sobreInner = document.querySelector('.sobre-img-inner');
+  if(sobreInner && c.f_sobre){
+    sobreInner.innerHTML = `<img src="${c.f_sobre}" alt="TURVISION" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`;
+  }
+  /* Lookbook */
+  if(c.f_lb) c.f_lb.forEach((url,i)=>{
+    const cell = document.querySelectorAll('.lb-cell')[i];
+    if(!cell) return;
+    const inner = cell.querySelector('.lb-inner');
+    if(url){
+      if(inner) inner.style.display='none';
+      let img = cell.querySelector('img.lb-real');
+      if(!img){ img=document.createElement('img'); img.className='lb-real'; img.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover'; cell.prepend(img); }
+      img.src = url;
+    } else {
+      if(inner) inner.style.display='';
+      const img = cell.querySelector('img.lb-real');
+      if(img) img.remove();
+    }
+  });
+  /* Productos */
+  if(c.f_prod) c.f_prod.forEach((url,i)=>{
+    const card = document.querySelectorAll('.pc')[i];
+    if(!card) return;
+    const pimg = card.querySelector('.pimg');
+    if(!pimg) return;
+    const txt = pimg.querySelector('.pimg-txt');
+    if(url){
+      if(txt) txt.style.display='none';
+      let img = pimg.querySelector('img.p-real');
+      if(!img){ img=document.createElement('img'); img.className='p-real'; img.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover'; pimg.prepend(img); }
+      img.src = url;
+    } else {
+      if(txt) txt.style.display='';
+      const img = pimg.querySelector('img.p-real');
+      if(img) img.remove();
+    }
+  });
 }
-document.getElementById('adminModal').addEventListener('click', function(e){
-  if(e.target===this) closeAdmin();
-});
 
 /* ─── Scroll reveal ─── */
 const rvEls = document.querySelectorAll('.rv');
@@ -1905,7 +2065,7 @@ rvEls.forEach(el=>rvObs.observe(el));
 
 /* ─── Init ─── */
 applyLang();
-applyWA();
+applyStoredConfig();
 </script>
 </body>
 </html>
