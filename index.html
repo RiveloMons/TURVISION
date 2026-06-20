@@ -1302,6 +1302,74 @@ footer{border-top:1px solid var(--b);padding:28px 0}
   <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
 </a>
 
+<!-- Firebase como módulo ES — carga antes del script principal -->
+<script type="module">
+import { initializeApp }                               from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getFirestore, doc, getDoc, setDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+const FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyC2wPeCCEkhumqcYPjg5DueOTemKZ2vMx8",
+  authDomain:        "tienda-ropa-2dc2f.firebaseapp.com",
+  projectId:         "tienda-ropa-2dc2f",
+  storageBucket:     "tienda-ropa-2dc2f.firebasestorage.app",
+  messagingSenderId: "604237546431",
+  appId:             "1:604237546431:web:20881b77b5fd12394f170a"
+};
+
+/* Estado compartido global */
+window._tvsn = {
+  cfg:     {},
+  db:      null,
+  docRef:  null,
+  ready:   false,
+};
+
+try {
+  const app   = initializeApp(FIREBASE_CONFIG);
+  const db    = getFirestore(app);
+  const dref  = doc(db, 'turvision', 'config');
+
+  window._tvsn.db     = db;
+  window._tvsn.docRef = dref;
+  window._tvsn._doc   = doc;
+  window._tvsn._set   = setDoc;
+
+  /* Carga inicial */
+  const snap = await getDoc(dref);
+  if(snap.exists()){
+    window._tvsn.cfg = snap.data();
+    localStorage.setItem('tvsn_cfg', JSON.stringify(window._tvsn.cfg));
+  } else {
+    /* Primera vez: migrar localStorage si hay datos */
+    const local = JSON.parse(localStorage.getItem('tvsn_cfg') || '{}');
+    if(Object.keys(local).length){
+      window._tvsn.cfg = local;
+      await setDoc(dref, local);  /* sube datos existentes a la nube */
+    }
+  }
+
+  /* Escucha en tiempo real → todos los usuarios ven cambios al instante */
+  onSnapshot(dref, snap => {
+    if(snap.exists()){
+      window._tvsn.cfg = snap.data();
+      localStorage.setItem('tvsn_cfg', JSON.stringify(window._tvsn.cfg));
+      /* Si la web ya está lista, re-aplica */
+      if(window._tvsn.ready && typeof window.applyStoredConfig === 'function'){
+        window.applyStoredConfig();
+      }
+    }
+  });
+
+} catch(e) {
+  console.warn('Firebase no disponible, usando localStorage:', e.message);
+  window._tvsn.cfg = JSON.parse(localStorage.getItem('tvsn_cfg') || '{}');
+}
+
+/* Marcar Firebase como inicializado y lanzar la app */
+window._tvsn.fbInit = true;
+if(typeof window._tvsn.onFbReady === 'function') window._tvsn.onFbReady();
+</script>
+
 <script>
 /* ============================================
    TURVISION — JS
@@ -1426,10 +1494,35 @@ function toggleLang(){
   applyLang();
 }
 
+/* ─── Firebase wrappers (el módulo ES de arriba hace el trabajo real) ─── */
+function getCfg(){
+  return (window._tvsn && window._tvsn.cfg)
+    ? window._tvsn.cfg
+    : JSON.parse(localStorage.getItem('tvsn_cfg') || '{}');
+}
+
+async function saveCfg(d){
+  const next = { ...getCfg(), ...d };
+  if(window._tvsn) window._tvsn.cfg = next;
+  localStorage.setItem('tvsn_cfg', JSON.stringify(next));
+  const ts = window._tvsn;
+  if(ts && ts.db && ts.docRef && ts._set){
+    try { await ts._set(ts.docRef, next); }
+    catch(e){ console.error('Firestore write:', e); }
+  }
+}
+
+async function initFirebase(){
+  /* Firebase ya cargó en el <script type="module"> — solo esperamos la señal */
+  return new Promise(resolve => {
+    if(window._tvsn && window._tvsn.fbInit){ resolve(); return; }
+    window._tvsn = window._tvsn || {};
+    window._tvsn.onFbReady = resolve;
+    setTimeout(resolve, 6000); /* timeout de seguridad */
+  });
+}
+
 /* ─── Admin — contraseña y panel completo ─── */
-const SK = 'tvsn_cfg';
-function getCfg(){ try{return JSON.parse(localStorage.getItem(SK)||'{}')}catch(e){return{}} }
-function saveCfg(d){ localStorage.setItem(SK, JSON.stringify({...getCfg(),...d})) }
 
 /* Datos de productos editables en memoria */
 const PROD_DEFAULTS = [
@@ -1464,7 +1557,7 @@ function checkPwd(){
   }
 }
 
-function changePwd(){
+async function changePwd(){
   const old  = document.getElementById('a-pwd-old').value;
   const nw   = document.getElementById('a-pwd-new').value;
   const nw2  = document.getElementById('a-pwd-new2').value;
@@ -1472,7 +1565,7 @@ function changePwd(){
   if(old !== getPwd()){err.textContent='Contraseña actual incorrecta';return}
   if(!nw){err.textContent='La nueva contraseña no puede estar vacía';return}
   if(nw !== nw2){err.textContent='Las contraseñas no coinciden';return}
-  saveCfg({pwd:nw});
+  await saveCfg({pwd:nw});
   err.style.color='#4caf50';
   err.textContent='✓ Contraseña cambiada';
   document.getElementById('a-pwd-old').value='';
@@ -1593,13 +1686,14 @@ function renderProdFields(prods){
 function esc(s){ return String(s).replace(/"/g,'&quot;').replace(/</g,'&lt;') }
 
 /* ── Guardar por sección y aplicar al DOM ── */
-function saveSection(sec){
+async function saveSection(sec){
   const c = getCfg();
+  showToast('⏳ Guardando...');
 
   if(sec==='marca'){
     const nombre = v('a-marca-nombre')||'TURVISION';
     const color  = v('a-marca-color')||'#bf1f1f';
-    saveCfg({
+    await saveCfg({
       marca_nombre:  nombre,
       marca_tagline: v('a-marca-tagline'),
       marca_year:    v('a-marca-year'),
@@ -1614,7 +1708,7 @@ function saveSection(sec){
   }
 
   if(sec==='hero'){
-    saveCfg({
+    await saveCfg({
       hero_eyebrow: v('a-hero-eyebrow'),
       hero_t1:   v('a-hero-t1'),
       hero_t2:   v('a-hero-t2'),
@@ -1624,19 +1718,16 @@ function saveSection(sec){
       hero_btn2: v('a-hero-btn2'),
     });
     setText('.hero-eyebrow', v('a-hero-eyebrow'));
-    /* h1 */
     const h1 = document.querySelector('.hero-h1');
     if(h1) h1.innerHTML = `${v('a-hero-t1')}<span class="out">${v('a-hero-t2')}</span>`;
-    /* hero-sub — there's no separate element for it in the static HTML, skip safely */
     setHtml('.hero-desc', v('a-hero-desc').replace(/\n/g,'<br>'));
-    /* Buttons text */
     const btns = document.querySelectorAll('.hero-btns .btn');
     if(btns[0]) btns[0].childNodes[0].textContent = v('a-hero-btn1')+' ';
     if(btns[1]) btns[1].textContent = v('a-hero-btn2');
   }
 
   if(sec==='sobre'){
-    saveCfg({
+    await saveCfg({
       sob_h2: v('a-sob-h2'), sob_p1b:v('a-sob-p1b'),
       sob_p1: v('a-sob-p1'), sob_p2:v('a-sob-p2'), sob_p3:v('a-sob-p3'),
       s1n:v('a-s1n'),s1l:v('a-s1l'),
@@ -1650,7 +1741,6 @@ function saveSection(sec){
     if(ps[0]) ps[0].innerHTML = `<strong>${v('a-sob-p1b')}</strong> ${v('a-sob-p1')}`;
     if(ps[1]) ps[1].textContent = v('a-sob-p2');
     if(ps[2]) ps[2].textContent = v('a-sob-p3');
-    /* stats */
     const sn = document.querySelectorAll('.stat-n');
     const sl = document.querySelectorAll('.stat-l');
     [[0,'s1n','s1l'],[1,'s2n','s2l'],[2,'s3n','s3l'],[3,'s4n','s4l']].forEach(([i,kn,kl])=>{
@@ -1668,8 +1758,7 @@ function saveSection(sec){
       badge: v(`ap-badge-${i}`),
       desc:  v(`ap-desc-${i}`)  || p.desc,
     }));
-    saveCfg({prods});
-    /* Aplicar al DOM */
+    await saveCfg({prods});
     const cards = document.querySelectorAll('.pc');
     prods.forEach((p,i)=>{
       if(!cards[i]) return;
@@ -1688,11 +1777,7 @@ function saveSection(sec){
         waLink.href = `https://wa.me/${num}?text=${encodeURIComponent('Hola TURVISION, me interesa '+p.name)}`;
       }
       cards[i].dataset.cat = p.cat;
-      /* Update select in form */
-      const opt = document.querySelector(`#rp option[value="${cards[i].querySelector('.pname')?.textContent}"]`);
-      /* Rebuild product select options */
     });
-    /* Rebuild reservar select */
     const sel = document.getElementById('rp');
     if(sel){
       const first = sel.options[0];
@@ -1704,7 +1789,7 @@ function saveSection(sec){
   }
 
   if(sec==='reservas'){
-    saveCfg({
+    await saveCfg({
       res_h2:v('a-res-h2'), res_p:v('a-res-p'),
       st1t:v('a-st1t'),st1s:v('a-st1s'),
       st2t:v('a-st2t'),st2s:v('a-st2s'),
@@ -1727,18 +1812,15 @@ function saveSection(sec){
     const wa2 = v('a-wa2').replace(/\D/g,'');
     const wa2nombre = v('a-wa2-nombre');
     const ig  = v('a-ig');
-    saveCfg({
+    await saveCfg({
       wa, wa2, wa2nombre, ig,
       stocktxt: v('a-stocktxt'),
       ct_t1: v('a-ct-t1'), ct_t2: v('a-ct-t2'), ct_sub: v('a-ct-sub'),
     });
     applyWA();
-    /* Instagram */
     document.querySelectorAll('.ct-item-v').forEach((el,i)=>{ if(i===1) el.textContent='@'+ig; });
-    /* Stock text */
     const stv = document.querySelector('[data-i18n="ct.stockval"]');
     if(stv) stv.textContent = v('a-stocktxt');
-    /* Contacto títulos */
     const cth2 = document.querySelector('.ct-h2');
     if(cth2) cth2.innerHTML = `${v('a-ct-t1')}<span class="out">${v('a-ct-t2')}</span>`;
     const ctsub = document.querySelector('.ct-sub');
@@ -1750,12 +1832,12 @@ function saveSection(sec){
     const sobreUrl = v('f-sobre-url') || getCfg().f_sobre || '';
     const lbUrls   = [0,1,2,3,4].map(i=> v(`f-lb-${i}`) || (getCfg().f_lb||[])[i] || '');
     const prodUrls = [0,1,2,3,4,5].map(i=> v(`f-prod-${i}`) || (getCfg().f_prod||[])[i] || '');
-    saveCfg({ f_hero:heroUrl, f_sobre:sobreUrl, f_lb:lbUrls, f_prod:prodUrls });
+    await saveCfg({ f_hero:heroUrl, f_sobre:sobreUrl, f_lb:lbUrls, f_prod:prodUrls });
     applyFotos({f_hero:heroUrl, f_sobre:sobreUrl, f_lb:lbUrls, f_prod:prodUrls});
   }
 
-  /* Toast */
-  showToast('✓ Guardado');
+  /* Toast final */
+  showToast('✓ Guardado en la nube');
 }
 
 function v(id){ const el=document.getElementById(id); return el?el.value.trim():'' }
@@ -2065,7 +2147,13 @@ rvEls.forEach(el=>rvObs.observe(el));
 
 /* ─── Init ─── */
 applyLang();
-applyStoredConfig();
+window.applyStoredConfig = applyStoredConfig; /* exponer para el módulo Firebase */
+/* Esperar a Firebase y luego aplicar config */
+initFirebase().then(() => {
+  window._tvsn = window._tvsn || {};
+  window._tvsn.ready = true;
+  applyStoredConfig();
+});
 </script>
 </body>
 </html>
